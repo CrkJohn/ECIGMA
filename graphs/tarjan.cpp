@@ -2,6 +2,9 @@
 // ii v = (n,w) || (w,n)
 //taken from: Competitive Programming 2
 
+vi dfs_num , dfs_low, dfs_parent , articulation_vertex;
+int dfsNumberCounter  = 1, dfsRoot, rootChildren;
+
 const int DFS_WHITE = -1;
  
 void articulationPointAndBridge(int u) {
