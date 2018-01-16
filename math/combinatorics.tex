@@ -1,0 +1,86 @@
+\def\multiset#1#2{\left( \binom{#1}{#2} \right)}
+
+\textbf{Binomial coefficients.} There are $\binom{m}{n}$ subsets of $\{1,..,m\}$ of size $n$.
+\begin{enumerate}
+\item $\binom{m}{n} = \binom{m-1}{n-1} + \binom{m-1}{n} ; \binom{m}{0} = \binom{m}{m} = 1$
+\item $\binom{m}{n} = \binom{m}{m-n} $
+\item $\binom{m}{n} = \frac{m!}{n!(m-n)!}$
+\item There are $\binom{m+n}{n}$ strings with $m$ zeros and $n$ ones.
+\item There are $\binom{m+1}{n}$ strings with $m$ zeros and $n$ no-adjacent ones.
+\end{enumerate}
+
+\textbf{Multisets.} There are $\multiset{m}{n}$ multisets of $\{1,..,m\}$ of size $n$.
+\begin{enumerate}
+\item $\multiset{m}{n} := \binom{m+n-1}{n}$
+\item $\multiset{m}{n} = \multiset{m-1}{n} + \multiset{m}{n-1} ; \multiset{m}{0} = \multiset{0}{0} =  1, \multiset{0}{n} = 0$
+\item $\multiset{m}{n} = \multiset{n+1}{m-1}$
+
+\end{enumerate}
+
+\textbf{Derangements.} There are $!m$ auto-bijections of $\{1,..,m\}$ without fixed points.
+\begin{enumerate}
+\item $!m := (m-1)(!(m-1)+!(m-2)) ; !0=1, !1=0$
+\item $!m = m!-\sum_{i=1}^m \binom{m}{i}!(m-i)$
+\item $!m = m!\sum_{i=0}^m \frac{(-1)^i}{i!}$
+\item $![0\dots 7) = [1, 0, 1, 2, 9, 44, 265]$
+$!13 = 2290792932$
+\end{enumerate}
+
+\textbf{Partial derangements.} There are $D(m,n)$ auto-bijections of $\{1,..,m\}$ with $n$ fixed points.
+\begin{enumerate}
+\item $D(m,n) := \binom{m}{n} D(m,0)$
+\item $D(m,0) = !m$
+\item $D(7,0\dots 7) = 7,1854,1855,924,315,70,21,0,1$\\
+\end{enumerate}
+
+\textbf{Partitions of m of length n.} A partition $A \subseteq \mathbb{Z}^{+}$ of a positive integer $m$ is an ordered multiset with $m=\sum_{a_i \in A} a_i$.
+
+There are $P(m,n)$ partitions of $m$ of length $n$.
+\begin{enumerate}
+\item $P(m,n) := |\{p\in \mathcal{P}(m): |p|=n\}| = |\{p\in \mathcal{P}(m): max(p_i\in p)=n\}|$
+\item $P(m,n) = \sum_{i=1}^n P(m-n,i)$
+\item $P(m,n) = P(m-1,n-1)+P(m-n,n) ; P(m,1)=1=P(0,0)$
+\item $P(30,1\dots 10) = [1,15,75,206,377,532,618,638,598,530]$\\
+$P(30)=3590$
+\item There are $P(m - \sum_1^n c_i + n,n)$ partitions of $m$ in $n$ summands $x_i\geq c_i$.
+\end{enumerate}
+
+\textbf{Partitions of \{1,..,m\} of length n.} A partition $P$ of a set $A$ is a set of non-empty disjoint sets of $A$ with $A = \cap_{P_i \in P} P_i$.
+
+There are $S(m,n)$ partitions of size $n$ of $\{1,..,m\}$.
+\begin{enumerate}
+\item $S(m,n) = n\ S(m-1,n)+S(m-1,n-1)$
+\item $S(10,1..10) = [1,511,9330,34105,42525,22827,5880,750,45,1]$\\\\
+$B(10)=115975$
+\item $B(m) = \sum_{i=0}^{m-1} \binom{m-1}{i} B(i) ; B(0)=1$
+\end{enumerate}
+
+\textbf{Catalan numbers.} There are $C(n)$ binary strings $A[0..2n)$ with $n$ ones, $n$ zeros and such that $A[0..i)$ doesn't have more ones than zeros for each $i \in [0..2n)$. 
+\begin{enumerate}
+\item $C_0 = 1 \quad \mbox{y} \quad C_{n+1}=\frac{2(2n+1)}{n+2}C_n,$
+\item $C[0..10) = 1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862.\\
+C[10..15) = 16796, 58786, 208012, 742900, 2674440.\\
+C[24] = 1289904147324.$
+\item $C_n = \frac{1}{n+1}\binom{2n}{n} = \frac{(2n)!}{(n+1)!\,n!} = \prod\limits_{k=2}^{n}\frac{n+k}{k} \qquad\mbox{para }n\ge 0.$
+\item $C_0 = 1 \quad \mbox{y} \quad C_{n+1}=\sum_{i=0}^{n}C_i\,C_{n-i}\quad\text{para }n\ge 0;$
+\end{enumerate}
+
+\textbf{Pisano Period.}
+$T(n)$ is the period of the sequence $(\verb|fib(i)%n|)$, where $(\verb|fib(i)|)$ is the Fibonnacci sequence.
+\begin{enumerate}
+\item $T(10^{[0..)}) =  1,60, 300, 1500,15000,...,15\cdot 10^{n-1}$
+\item $T(2^{[0..5)}) = 1,3,6,12,24\\
+T(2^{[5..10)}) = 48,96,192,384,768\\
+T(2^{[10..15)}) = 1536,3072,6144,12288,24576\\
+T(2^{[15..20)}) = 49152,98304,196608,393216,786432\\
+T(2^{[20..21)}) = 1572864$
+\end{enumerate}
+
+\textbf{Powers of two.}
+\begin{enumerate}
+\item $2^{[0..5)} = 1,2,4,8,16\\
+2^{[5..10)} = 32,64,128,256,512\\
+2^{[10..15)} = 1024,2048,4096,8192,16384\\
+2^{[15..20)} = 32768,65536,131072,262144,524288\\
+2^{[20..21)} = 1048576$
+\end{enumerate}
