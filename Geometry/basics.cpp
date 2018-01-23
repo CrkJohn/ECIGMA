@@ -1,70 +1,81 @@
-#define SZ 1000
-using namespace std;
-typedef pair<int,int> ii;
-typedef deque<ii> dii;
 
-double PI=acos(-1);
-double iiabs(ii a){return sqrt(a.x*a.x+a.y*a.y);}
-ii operator-(ii a,ii b){return ii(a.x-b.x,a.y-b.y);}
-double dist(ii a,ii b){return iiabs(a-b);}
-double ang(ii a){return atan2(a.y,a.x);}
-double cot(double i){while(i<=-PI) i+=2*PI; while(i>PI) i-=2*PI; return i;}
-int rcw(ii a0, ii a1, ii a2){
-	int result = (a2.x - a1.x)*(a0.y-a1.y) - (a2.y-a1.y)*(a0.x-a1.x);
-	if (result < 0) return -1;
-	if (result > 0) return 1;
+typedef complex<double> point;
+typedef vector<point> polygon;
+
+#define NEXT(i) (((i) + 1) % n)
+
+
+struct circle{
+     point c ; double r;
+     circle(){point c = point(0.,0.); double r=0.0;}
+     circle(point _c, double _r): c(_c.x,_c.y), r(_r){}
+};
+
+struct line { point p, q; };
+using segment = line;
+
+const double eps = 1e-9;
+
+// fix comparations on doubles with this two functions
+int sign(double x) { return x < -eps ? -1 : x > eps; }
+
+int dblcmp(double x, double y) { return sign(x - y); }
+
+double dot(point a, point b) { return real(conj(a) * b); }
+
+double cross(point a, point b) { return imag(conj(a) * b); }
+
+double area2(point a, point b, point c) { return cross(b - a, c - a); }
+
+int ccw(point a, point b, point c)
+{
+	b -= a; c -= a;
+	if (cross(b, c) > 0) return +1; // counter clockwise
+	if (cross(b, c) < 0) return -1; // clockwise
+	if (dot(b, c) < 0) return +2; // c--a--b on line
+	if (dot(b, b) < dot(c, c)) return -2; // a--b--c on line
 	return 0;
 }
-double deg(double i){return i*180/PI;}
-bool intls(ii l0,ii l1,ii s0,ii s1){return ccw(l0,l1,s0)*ccw(l0,l1,s1)!=1;}
-bool intss(ii a0,ii a1,ii b0,ii b1){
-  if(ccw(a0,a1,b0)>=0&&ccw(a0,a1,b1)<=0&&ccw(b0,b1,a0)<=0&&ccw(b0,b1,a1)>=0) return true;
-  if(ccw(a0,a1,b0)<=0&&ccw(a0,a1,b1)>=0&&ccw(b0,b1,a0)>=0&&ccw(b0,b1,a1)<=0) return true;
-  return false;
-}
-bool intlp(ii l0,ii l1,ii a){ return ccw(l0,l1,a)==0;}
-bool intsp(ii s0,ii s1,ii a){ return dist(s0,s1)==dist(s0,a)+dist(a,s1);}
-double ccwang(ii a,ii b,ii c){ c=c-b; b=b-a; return cot(ang(c)-ang(b));}
-double insang(ii a,ii b,ii c){ return PI-abs(ccwang(a,b,c));}
-double distlp(ii l0,ii l1,ii a){
-	ii d=l1-l0;
-	return abs(d.y*a.x-d.x*a.y-l0.x*l1.y+l1.x*l0.y)/(double)iiabs(d);
-}
-double distsp(ii s0,ii s1,ii a){
-	if(insang(s0,s1,a)<=PI/2 && insang(s1,s0,a)<=PI/2) return distlp(s0,s1,a);
-	return min(dist(a,s0),dist(a,s1));
-}
-bool inpol(dii &pol,ii a){
-	int polsz=(int)pol.size(),wn=0,i;
-	pol.pb(pol[0]);
-	loop(i,0,polsz)
-		if(pol[i].y <=a.y){	if(pol[i+1].y>a.y && ccw(a,pol[i],pol[i+1])==1) wn++; }
-		else if(pol[i+1].y<=a.y && ccw(a,pol[i],pol[i+1])==-1) wn--;
-	pol.popb();
-	return !(wn==0);
-}
-// Expected: 4800 6818 1668 5723 8662 3530
-int h,mod=11311,a=929,sz=700;
-ii p[SZ];
-dii pol;
-int prandom(int b){return h=(a*h+abs(b))%mod;}
-int ftest(int i,int j){
-	if(j==0) return intls(p[i],p[i+1],p[i+2],p[i+3]);
-	if(j==1) return intss(p[i],p[i+1],p[i+2],p[i+3]);
-	if(j==2) return distlp(p[i],p[i+1],p[i+2]);
-	if(j==3) return distsp(p[i],p[i+1],p[i+2]);
-	if(j==4) return inpol(pol,p[i]);
-}
-int main(){
-	int i,j;
-	h=0;
-	loop(i,0,sz+3) p[i]=ii(prandom(137),prandom(137));
-  printf("%d\n",h);
-  pol.clear(); loop(i,0,sz/7) pol.pb(p[i]);
-  loop(j,0,5){
-		h=0;
-		loop(i,0,sz) prandom(i+ftest(i,j));
-		printf("%d\n",h);
+
+namespace std
+{
+	bool operator<(point a, point b)
+	{
+		if (a.real() != b.real())
+			return a.real() < b.real();
+		return a.imag() < b.imag();
 	}
-	return 0;
 }
+
+struct point { 
+	double x, y;
+  	point() { x = y = 0.0; }
+  	point(double _x, double _y) : x(_x), y(_y) {}        
+  	bool operator == (point other) const {
+   		return (fabs(x - other.x) < 1e-9 && (fabs(y - other.y) < 1e-9)); 
+   	}
+};
+
+
+/*Trabajando con estructuras de tipo punto*/
+  double euclideanDistance(point p1, point p2) {           
+    return hypot(p1.x - p2.x, p1.y - p2.y); 
+  } 
+
+/*Trabajando con los valores x y y de cada punto*/
+double euclideanDistance(double x1, double y1, double x2, double y2){           
+  return hypot(x1 - x2, y1 - y2); 
+} 
+
+
+
+Dados dos puntos A y B, crea el vector A->B. IMPORTANTE: Debe definirse la estructura point. Es llamado vec para no confundirlo con el vector propio de c++.
+struct vec { 
+	double x, y;  
+  vec(double _x, double _y) : x(_x), y(_y) {} 
+};
+
+vec toVector(point a, point b) {       
+	return vec(b.x - a.x, b.y - a.y); 
+}
+
