@@ -6,10 +6,9 @@ using namespace std;
 
 typedef long long large;
 large segmentTree[4 * size];
-large a[size];
 large lazy[4 * size];
 
-void updateSegmentTreeRangeLazy(int startRange, int endRange,int delta, int low, int high, int pos) {
+void updateSegmentTreeRangeLazy(large startRange, large endRange,large delta, large low, large high, large pos) {
         if(low > high)return;
         //make sure all propagation is done at pos. If not update tree
         //at pos and mark its children for lazy propagation.
@@ -33,13 +32,13 @@ void updateSegmentTreeRangeLazy(int startRange, int endRange,int delta, int low,
             return;
         }
         //otherwise partial overlap so look both left and right.
-        int mid = (low + high)/2;
+        large mid = (low + high)/2;
         updateSegmentTreeRangeLazy(startRange, endRange,delta, low, mid, 2*pos+1);
         updateSegmentTreeRangeLazy(startRange, endRange,delta, mid+1, high, 2*pos+2);
         segmentTree[pos] =  segmentTree[2*pos+1] + segmentTree[2*pos+2];
 }
 
-large rangeMinimumQueryLazy(int qlow, int qhigh,int low, int high, int pos) {
+large rangeMinimumQueryLazy(large qlow, large qhigh,large low, large high, large pos) {
         if(low > high)return 0;
         //make sure all propagation is done at pos. If not update tree
         //at pos and mark its children for lazy propagation.
@@ -57,8 +56,9 @@ large rangeMinimumQueryLazy(int qlow, int qhigh,int low, int high, int pos) {
         //total overlap
         if(qlow <= low && qhigh >= high)return segmentTree[pos];
         //partial overlap
-        int mid = (low+high)/2;
-        return rangeMinimumQueryLazy(qlow, qhigh,low, mid,2*pos + 1) + rangeMinimumQueryLazy(qlow, qhigh,mid+1, high, 2*pos+2);
+        large mid = (low+high)/2;
+        
+        return  rangeMinimumQueryLazy(qlow, qhigh,low, mid,2*pos + 1) + rangeMinimumQueryLazy(qlow, qhigh,mid+1, high, 2*pos+2);;
 }
 
 
@@ -66,20 +66,20 @@ large rangeMinimumQueryLazy(int qlow, int qhigh,int low, int high, int pos) {
 
 
 int main(){
-    int ntc;
-    freopen("HQ.txt","r",stdin);
-    int type,p,q,delta;
-    scanf("%d",&ntc);
+    large ntc;
+    //freopen("HQ.txt","r",stdin);
+    large type,p,q,delta;
+    scanf("%lld",&ntc);
     while(ntc--){
-        int len,lines;
-        scanf("%d %d",&len,&lines);
+        large len,lines;
+        scanf("%lld %lld",&len,&lines);
         memset(segmentTree,0,sizeof(segmentTree));
-
         memset(lazy,0,sizeof(lazy));
-        for(int i = 0 ; i < lines;i++){
-            scanf("%d %d %d",&type,&p,&q);
+        for(large i = 0 ; i < lines;i++){
+            scanf("%lld %lld %lld",&type,&p,&q);
             if(type==0){
-                scanf("%d",&delta);
+            	//printf("%lld %lld %lld\n",type,p,q);
+                scanf("%lld",&delta);
                 updateSegmentTreeRangeLazy(p-1,q-1,delta,0,len-1,0);
             }else{
                 printf("%lld\n",rangeMinimumQueryLazy(p-1,q-1,0,len-1,0));
