@@ -4,16 +4,17 @@
 
 using namespace std;
 
+typedef long long large;
+large segmentTree[4 * size];
+large a[size];
+large lazy[4 * size];
 
-long long segmentTree[4 * size];
-long long a[size];
-long long lazy[4 * size];
 void updateSegmentTreeRangeLazy(int startRange, int endRange,int delta, int low, int high, int pos) {
         if(low > high)return;
         //make sure all propagation is done at pos. If not update tree
         //at pos and mark its children for lazy propagation.
         if (lazy[pos] != 0) {
-            segmentTree[pos] += lazy[pos];
+            segmentTree[pos] += lazy[pos]*(high-low+1);
             if (low != high) { //not a leaf node
                 lazy[2 * pos + 1] += lazy[pos];
                 lazy[2 * pos + 2] += lazy[pos];
@@ -24,7 +25,7 @@ void updateSegmentTreeRangeLazy(int startRange, int endRange,int delta, int low,
         if(startRange > high || endRange < low)return;
         //total overlap condition
         if(startRange <= low && endRange >= high) {
-            segmentTree[pos] += delta;
+            segmentTree[pos] += delta*(high-low+1);
             if(low != high) {
                 lazy[2*pos + 1] += delta;
                 lazy[2*pos + 2] += delta;
@@ -38,14 +39,14 @@ void updateSegmentTreeRangeLazy(int startRange, int endRange,int delta, int low,
         segmentTree[pos] =  segmentTree[2*pos+1] + segmentTree[2*pos+2];
 }
 
-long rangeMinimumQueryLazy(int qlow, int qhigh,int low, int high, int pos) {
+large rangeMinimumQueryLazy(int qlow, int qhigh,int low, int high, int pos) {
         if(low > high)return 0;
         //make sure all propagation is done at pos. If not update tree
         //at pos and mark its children for lazy propagation.
         if(qlow > high || qhigh < low)return 0;
 
         if (lazy[pos] != 0) {
-            segmentTree[pos] += lazy[pos];
+            segmentTree[pos] += lazy[pos]*(high-low+1);
             if (low != high) { //not a leaf node
                 lazy[2*pos+1] += lazy[pos];
                 lazy[2*pos+2] += lazy[pos];
@@ -79,18 +80,9 @@ int main(){
             scanf("%d %d %d",&type,&p,&q);
             if(type==0){
                 scanf("%d",&delta);
-                //int startRange, int endRange,int delta, int low, int high, int pos
                 updateSegmentTreeRangeLazy(p-1,q-1,delta,0,len-1,0);
-                puts("Segment");
-                for(int i = 0 ; i< (4*len);i++)printf(" %ld",segmentTree[i]);
-                puts("");
-                puts("Lazy");
-                for(int i = 0 ; i< (4*len);i++)printf(" %ld",lazy[i]);
-                puts("");
             }else{
-                //updateSegmentTreeRangeLazy(p-1,q-1,0,0,len-1,0);
-                //int qlow, int qhigh,int low, int high, int pos
-                printf("%ld\n",rangeMinimumQueryLazy(p-1,q-1,0,len-1,0));
+                printf("%lld\n",rangeMinimumQueryLazy(p-1,q-1,0,len-1,0));
             }
 
         }
