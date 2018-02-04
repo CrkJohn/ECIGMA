@@ -35,7 +35,7 @@ void updateSegmentTreeRangeLazy(large startRange, large endRange,large delta, la
         large mid = (low + high)/2;
         updateSegmentTreeRangeLazy(startRange, endRange,delta, low, mid, 2*pos+1);
         updateSegmentTreeRangeLazy(startRange, endRange,delta, mid+1, high, 2*pos+2);
-        segmentTree[pos] =  segmentTree[2*pos+1] + segmentTree[2*pos+2];
+        segmentTree[pos] =  segmentTree[2*pos+1] + segmentTree[2*pos+2]; 
 }
 
 large rangeMinimumQueryLazy(large qlow, large qhigh,large low, large high, large pos) {
