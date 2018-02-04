@@ -3,7 +3,7 @@
 
 using namespace std;
 //const int LIM = 1e5;
-int segmentTree[400005],input[100005];
+int segmentTree[400005];
 int rangeMinimumQuery(int low,int high,int qlow,int qhigh,int pos){
         if(qlow <= low && qhigh >= high)return segmentTree[pos];
         if(qlow > high || qhigh < low)return INT_MAX;
