@@ -31,7 +31,7 @@ void createSegmentTree(vector<int> &input){
 }
 
 int main(){
-	/*https://vjudge.net/problem/LightOJ-1082*/
+	/*https://vjudge.net/problem/LightOJ-1082*/ 
         int cases,n;
         scanf("%d",&cases);
         for(int ntc = 1 ;  ntc<=cases;ntc++){
