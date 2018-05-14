@@ -1,5 +1,6 @@
 from sys import stdin
 #https://www.youtube.com/watch?v=RpgcYiky7uw
+
 def kosaraju(u,passDfs,vu):
     global g,topo,gR
     vis[u] = 1
@@ -31,17 +32,26 @@ def main():
     rev  = st[::-1]
     SCC = 0
     vis =[ False for x in range(n+1)]
-    compresionDelGrafo = list()
+    SSCgroup = list()
     for u in rev:
         if not(vis[u]):
             vu = list()
             kosaraju(u,2,vu)
-            compresionDelGrafo.append(vu)
+            SSCgroup.append(vu)
             SCC+=1
-    print( *[(vu) for vu in compresionDelGrafo ])
+    for i in range(len(SSCgroup)):
+        print("grupo",i," Elementos ",*SSCgroup[i])
   
 main()
 
-
-
-
+"""
+7 8
+2 3
+3 1
+1 2
+3 5
+5 6
+6 4
+4 5
+7 6
+"""
