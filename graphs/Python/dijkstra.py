@@ -1,31 +1,32 @@
 from sys import stdin
-from heapq import * 
+from heapq import *
 
-def dijkstra(src):
-    ans = [ float('inf') for i in range(len(graph)) ] ;
-    ans[source] = 0
-    visited = [ False for i in range(len(graph)) ]
-    prev = [ -1 for i in range(len(graph)) ]
-    pq = [ (0,src) ]
-    while len(pq)!=0:
-        wu,u = hpp(pq)
-        if not(visited[u]):
-          # assert ans[u]==wu
-          for v,wv in g[u]:
-            if wu+wv < ans[v]:
-              ans[v] = wu+wv
-              prev[v] = u
-              heappush(pq,(ans[v],v))
-          visited[u] = True
-  return ans,prev
-    
+def dijkstra2(src):
+    global g
+    n = len(g)
+    inf = int(1e5)
+    dist = [inf]*n
+    dist[src] = 0
+    h = [(0,src)]
+    while len(h):
+        d, u = heappop(h)
+        #if dist[u]!=d:
+        #    continue
+        for v,w in g[u]:
+            print("{}-w:{}-{} ".format(u,w,v))
+            if d+w < dist[v]:
+                dist[v] = d+w
+                heappush(h, (d+w, v))
+    return dist
+
 def main():
     global g
     n,e  = [int(x) for x in stdin.readline().strip().split()]
     g = [[] for i in range(n+1)]
     for G in range(e):
         u,v,w = [int(x) for x in stdin.readline().strip().split()]
-        g[u].append(v)
-        g[v].append(u)
- 
+        g[u].append((v,w))
+        g[v].append((u,w))
+    print(dijkstra2(0))
 main()
+
