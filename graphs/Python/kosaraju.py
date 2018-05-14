@@ -28,11 +28,9 @@ def main():
     for i in range(n+1):
         if not(vis[i]):
             kosaraju(i,1,[])
-    print(st)
     rev  = st[::-1]
     SCC = 0
     vis =[ False for x in range(n+1)]
-    print(rev)
     compresionDelGrafo = list()
     for u in rev:
         if not(vis[u]):
