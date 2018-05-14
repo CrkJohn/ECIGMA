@@ -1,5 +1,5 @@
 from sys import stdin
-
+#https://www.youtube.com/watch?v=RpgcYiky7uw
 def kosaraju(u,passDfs,vu):
     global g,topo,gR
     vis[u] = 1
