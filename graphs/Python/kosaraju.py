@@ -1,6 +1,6 @@
 from sys import stdin
-#https://www.youtube.com/watch?v=RpgcYiky7uw
-
+from sys import setrecursionlimit
+setrecursionlimit(10000)
 def kosaraju(u,passDfs,vu):
     global g,topo,gR
     vis[u] = 1
@@ -11,11 +11,11 @@ def kosaraju(u,passDfs,vu):
     if(passDfs==1):
         st.append(u)
     else:
-        vu.append(u)
-
+        sccMap[u] = SCC
+        #vu.append(u)
 
 def main():
-    global g , vis ,st,gR
+    global g , vis ,st,gR , SCC, sccMap 
     n,e  = [int(x) for x in stdin.readline().strip().split()]
     vis =[ False for x in range(n+1)]
     g = [[] for i in range(n+1)]
@@ -32,15 +32,25 @@ def main():
     rev  = st[::-1]
     SCC = 0
     vis =[ False for x in range(n+1)]
-    SSCgroup = list()
+    #SSCgroup = list()
+    sccMap = {}
     for u in rev:
         if not(vis[u]):
-            vu = list()
-            kosaraju(u,2,vu)
-            SSCgroup.append(vu)
+            #vu = list()
+            kosaraju(u,2,[])
+            #SSCgroup.append(vu)
             SCC+=1
+    """        
     for i in range(len(SSCgroup)):
         print("grupo",i," Elementos ",*SSCgroup[i])
+    print()
+    for  i in sccMap:
+        print("El nodo {} esta en el SCC : {}".format(i,sccMap[i]))
+    """
+    q = int(stdin.readline().strip())
+    for i in range(q):
+        u,v = [int(x) for x in stdin.readline().strip().split()]
+        print(1 if(sccMap[u]==sccMap[v]) else  0) 
   
 main()
 
