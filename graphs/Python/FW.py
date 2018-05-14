@@ -1,7 +1,7 @@
 from sys import stdin
 from heapq import *
 
-def FW(src):
+def FW():
     for k in range(n):
         for i in range(n):
             for j in range(n):
@@ -17,6 +17,6 @@ def main():
         u,v,w = [int(x) for x in stdin.readline().strip().split()]
         g[u][v] = w
         g[v][u] = w
-    print(dijkstra2(0))
+    print(FW())
 main()
 
