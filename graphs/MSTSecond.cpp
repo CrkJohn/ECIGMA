@@ -8,6 +8,9 @@
 #include <vector>
 #include <queue>
 #include <utility>
+
+// https://www.topcoder.com/community/data-science/data-science-tutorials/range-minimum-query-and-lowest-common-ancestor/#Lowest%20Common%20Ancestor%20(LCA)
+// https://blog.csdn.net/beihai2013/article/details/50402108
 using namespace std;
 typedef pair<int,int> pii;
 const int MAXN = 200000 + 5;
