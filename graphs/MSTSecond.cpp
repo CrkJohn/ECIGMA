@@ -1,123 +1,109 @@
-#include<cstdio>
-#include<iostream>
-#include<cstring>
-#include<algorithm>
-#include<cmath>
-#include<vector>
-#include<queue>
-#include<map>
-#include<set>
-#include<ctime>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <cmath>
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <queue>
+#include <utility>
 using namespace std;
-typedef long long ll;
-#define maxn 222222
-struct node
+typedef pair<int,int> pii;
+const int MAXN = 200000 + 5;
+int fa[MAXN][25], dep[MAXN], MaxEdge[MAXN][20];
+int pa[MAXN];
+vector<pii>lin[MAXN];
+struct E
 {
-    int u,v,w,id;
-    bool operator<(const node&b)const
-    {
-        return w<b.w;
+    int u, v, w;
+    int num, vis;
+}e[MAXN];
+bool cmp(E a, E b){return a.w < b.w;}
+bool cmp2(E a, E b){return a.num < b.num;}
+int n, m;
+int find_pa(int u){return u == pa[u] ? u : pa[u] = find_pa(pa[u]);}
+void combine(int u, int v){pa[find_pa(u)] = pa[find_pa(v)];}
+void dfs(int u, int p)
+{
+    dep[u] = dep[p] + 1;
+    for(int i = 0 ; i < (int)lin[u].size() ; i++){
+        int v = lin[u][i].first;
+        if(v == p)  continue;
+        dfs(v, u);
+        fa[v][0] = u;
+        MaxEdge[v][0] = lin[u][i].second;
     }
-}edge[maxn];
-int T,n,m,fa[maxn],W[maxn];
-int vis[maxn],deep[maxn],p[maxn][21],Max[maxn][21];
-typedef pair<int,int>P;
-vector<P>G[maxn];
-ll ans[maxn];
-void add(int u,int v,int id)
-{
-    G[u].push_back(P(v,id)),G[v].push_back(P(u,id));
 }
-int find(int x)
+void LCA_init()
 {
-    if(fa[x]==x) return x;
-    return fa[x]=find(fa[x]);
-}
-ll kruskal(int n,int m)
-{
-    for(int i=1;i<=n;i++)fa[i]=i;
-    for(int i=1;i<=n;i++)G[i].clear();
-    int cnt=0;
-    ll ans=0;
-    sort(edge+1,edge+m+1);
-    for(int k=1;k<=m;k++)
-    {
-        int u=edge[k].u,v=edge[k].v,w=edge[k].w,id=edge[k].id;
-        int x=find(u),y=find(v);
-        if(x!=y)
-        {
-            cnt++;
-            fa[x]=y;
-            ans+=w;
-            add(u,v,id);
-            vis[id]=1;
-            if(cnt==n-1)return ans;
+    for(int i = 1 ; (1 << i) < n ; i++){
+        for(int j = 1 ; j <= n ; j++){
+            if(fa[j][i - 1] == -1)  continue;
+            fa[j][i] = fa[fa[j][i - 1]][i - 1];
+            MaxEdge[j][i] = max(MaxEdge[j][i - 1], MaxEdge[fa[j][i - 1]][i - 1]);
         }
     }
-    return -1;
 }
-void dfs(int u,int f,int w)
+int query(int u, int v)
 {
-    deep[u]=deep[f]+1,p[u][0]=f,Max[u][0]=w;
-    for(int i=1;i<=20;i++)
-    {
-        if(deep[u]-(1<<i)<=0)break;
-        int v=p[u][i-1];
-        p[u][i]=p[v][i-1];
-        if(W[Max[u][i-1]]<W[Max[v][i-1]])Max[u][i]=Max[v][i-1];
-        else Max[u][i]=Max[u][i-1];
+    if(dep[u] < dep[v]) swap(u, v);
+//    int l = dep[u] - dep[v];
+    int ans = 0;
+//    printf("u = %d, v = %d\n", u, v);
+    int temp = u;
+//    printf("fa[u][0] = %d, fa[u][1] = %d\n", fa[u][0], fa[u][1]);
+    for(int j = 24 ; j >= 0 ; j--){
+        if(fa[u][j] != -1 && dep[fa[u][j]] >= dep[v])   ans = max(ans, MaxEdge[u][j]), u = fa[u][j];
     }
-    for(int i=0;i<G[u].size();i++)
-    {
-        int v=G[u][i].first,w=G[u][i].second;
-        if(v!=f)dfs(v,u,w);
+//    printf("u = %d, v = %d\n", u, v);
+//    printf("for u = 2 fa[u][0] = %d, fa[u][1] = %d, MaxEdge[u][0] = %d\n", fa[2][0], fa[2][1], MaxEdge[u][0]);
+//    printf("for u = 3 fa[u][0] = %d, fa[u][1] = %d, MaxEdge[v][0] = %d\n", fa[3][0], fa[3][1], MaxEdge[v][0]);
+    if(u == v)  return ans;
+    for(int j = 24 ; j >= 0 ; j--){
+        if(fa[u][j] != fa[v][j]){
+            ans = max(ans, MaxEdge[u][j]);  u = fa[u][j];
+            ans = max(ans, MaxEdge[v][j]);  v = fa[v][j];
+        }
     }
-}
-int get_max(int x,int y)
-{
-    if(deep[x]<deep[y])swap(x,y);
-    int temp=0,ans=0;
-    for(int i=20;i>=0;i--)
-        if(deep[x]-(1<<i)>=deep[y])
-        {
-            if(W[Max[x][i]]>temp)ans=Max[x][i],temp=W[ans];
-            x=p[x][i];
-        }
-    if(x==y)return ans;
-    for(int i=20;i>=0;i--)
-        if(deep[x]-(1<<i)>0&&p[x][i]!=p[y][i])
-        {
-            if(W[Max[x][i]]>temp)ans=Max[x][i],temp=W[ans];
-            if(W[Max[y][i]]>temp)ans=Max[y][i],temp=W[ans];
-            x=p[x][i],y=p[y][i];
-            if(x==y)break;
-        }
-    if(W[Max[x][0]]>temp)ans=Max[x][0],temp=W[ans];
-    if(W[Max[y][0]]>temp)ans=Max[y][0],temp=W[ans];
+    ans = max(ans, MaxEdge[u][0]);
+    ans = max(ans, MaxEdge[v][0]);
     return ans;
 }
 int main()
 {
-    scanf("%d%d",&n,&m);
-    for(int i=1;i<=m;i++)
-    {
-        scanf("%d%d%d",&edge[i].u,&edge[i].v,&edge[i].w);
-        W[i]=edge[i].w,edge[i].id=i;
-    }
-    memset(vis,0,sizeof(vis));
-    ll sum=kruskal(n,m);
-    deep[0]=0;
-    dfs(1,0,0);
-    for(int i=1;i<=m;i++)
-    {
-        int id=edge[i].id,u=edge[i].u,v=edge[i].v,w=edge[i].w;
-        if(vis[id])ans[id]=sum;
-        else
-        {
-            int t=get_max(u,v);
-            ans[id]=sum+w-W[t];
+    while(scanf("%d%d", &n, &m) != EOF){
+        for(int i = 1 ; i <= n ; i++)   pa[i] = i, lin[i].clear();
+        for(int i = 0 ; i < m ; i++)    scanf("%d%d%d", &e[i].u, &e[i].v, &e[i].w), e[i].num = i, e[i].vis = 0;
+        sort(e, e + m, cmp);
+        int num = 0;
+        long long ans = 0;
+//        printf("first\n");
+        for(int i = 0 ; i < m ; i++){
+            if(find_pa(e[i].u) == find_pa(e[i].v))  continue;
+            combine(e[i].u, e[i].v);
+            num++;
+            lin[e[i].u].push_back(make_pair(e[i].v, e[i].w));
+            lin[e[i].v].push_back(make_pair(e[i].u, e[i].w));
+            e[i].vis = 1;
+            ans += e[i].w;
+//            if(num == n - 1)    break;
+        }
+        memset(fa, -1, sizeof(fa));
+        dep[0] = 0;
+//        printf("second\n");
+        dfs(1, 0);
+//        printf("third\n");
+//        system("pause");
+        LCA_init();
+        sort(e, e + m, cmp2);
+        for(int i = 0 ; i < m ; i++){
+//            printf("e[i].vis = %d\n", e[i].vis);
+//            if(e[i].vis)    printf("%I64d\n", ans);
+//            else{
+                printf("%I64d\n", ans - query(e[i].u, e[i].v) + e[i].w);
+//            }
         }
     }
-    for(int i=1;i<=m;i++)printf("%I64d\n",ans[i]);          
     return 0;
 }
