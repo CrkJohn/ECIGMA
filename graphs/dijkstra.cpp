@@ -1,16 +1,16 @@
-priority_queue<ii, vector<ii>, greater<ii> > pq;
-loop(i, 0, n) dis[i]=INF;  dis[s]=0;
+priority_queue<pii, vector<pii>, greater<pii> > pq;
+forn(i, n) dis[i]=INF;  dis[s]=0;
 while (!pq.empty()) pq.pop();
-pq.push(ii(0, s));
+pq.push(pii(0, s));
 while (!pq.empty()){
-  par=pq.top(); pq.pop();
-  d=par.X; u=par.Y;
+  pii par=pq.top(); pq.pop();
+  int d=par.fi , u=par.se;
   if (d>dis[u]) continue;
-  loop(j, 0, (int) adjList[u].size()){
-    ii v=adjList[u][j];
-    if (dis[u]+v.Y < dis[v.X]){
-      dis[v.X]= dis[u] + v.Y;
-      pq.push(ii(dis[v.X], v.X));
+  forn(j,len(adjList[u])){
+    pii v=adjList[u][j];
+    if (dis[u]+v.se < dis[v.fi]){
+      dis[v.fi]= dis[u] + v.se;
+      pq.push(pii(dis[v.fi],v.se));
     }
   }
 }
